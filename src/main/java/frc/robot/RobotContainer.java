@@ -12,7 +12,10 @@ import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DriveBaseController;
+import frc.robot.commands.TurnToAngle;
+import frc.robot.lib.SmartSupplier;
 import frc.robot.subsystems.ArcadeDrive;
 
 /**
@@ -26,6 +29,10 @@ public class RobotContainer {
   private ArcadeDrive driveBase = new ArcadeDrive();
 
   private XboxController driver = new XboxController(Constants.pilot);
+  
+  public SmartSupplier kP = new SmartSupplier("PID/kP", Constants.PIDConstants.kP);
+  public SmartSupplier kI = new SmartSupplier("PID/kI", Constants.PIDConstants.kI);
+  public SmartSupplier kD = new SmartSupplier("PID/kD", Constants.PIDConstants.kD);
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -53,6 +60,7 @@ public class RobotContainer {
     // return driveRotationFilter.calculate(rotation);
     return rotation;
   }
+
   
   /**
    * Use this method to define your button->command mappings.  Buttons can be created by
@@ -61,8 +69,9 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    new JoystickButton(driver, XboxController.Button.kX.value)
+      .whenPressed(new TurnToAngle(this, driveBase, 90));
   }
-
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

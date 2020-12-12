@@ -7,14 +7,18 @@
 
 package frc.robot.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArcadeDrive extends SubsystemBase {
   
+  private AHRS gyro = new AHRS(SPI.Port.kMXP);
+
   private CANSparkMax frontLeft = new CANSparkMax(2 , MotorType.kBrushless);
   private CANSparkMax frontRight = new CANSparkMax(1 , MotorType.kBrushless);
   DifferentialDrive driveBase = new DifferentialDrive(frontLeft, frontRight);
@@ -25,10 +29,15 @@ public class ArcadeDrive extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
   }
 
-  public void driveRobot(double xSpeed, double zRotation, boolean squareInputs){
+  public void driveRobot(double xSpeed, double zRotation, boolean squareInputs)   
+  {
     driveBase.arcadeDrive(xSpeed, zRotation, squareInputs);
+  }
+
+  public double getHeading()
+  {
+    return Math.IEEEremainder(gyro.getAngle(), 360);
   }
 }
